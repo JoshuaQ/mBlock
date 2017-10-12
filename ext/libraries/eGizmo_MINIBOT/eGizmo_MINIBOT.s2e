@@ -1,0 +1,201 @@
+{	"extensionName": "eGizmo_MINIBOT",
+	"sort":0,  
+    "javascriptURL":"js/eGizmo_MINIBOT.js", // Underconstructions
+    "firmware":"10.11.17.1",
+    "extensionPort":0,
+	"blockSpecs": [
+		["h","eGizmo MINIBOT Program","runArduino"],
+
+	    [
+            "w",
+            "ADD eGizmo_MINIBOT Library",
+            "ADD eGizmo_MINIBOT Library",
+            {
+                "setup":"",
+                "inc":"#include \"eGizmo_MINIBOT.h\"",
+                "def":"eGizmo_MINIBOT MINIBOT;\n",
+                "work":"",
+                "loop":""
+            }
+        ],
+
+        [
+            "w",
+            "SET COLLISION SENSORS AS INPUT",
+            "SET COLLISION SENSORS AS INPUT",
+            {
+                "setup":" pinMode(2, INPUT);\n pinMode(3, INPUT);\n pinMode(4, INPUT);\n",
+                "inc":"",
+                "def":"",
+                "work":"",
+                "loop":""
+            }
+        ],
+
+        [
+            "w",
+            "SET LINE SENSORS AS INPUT",
+            "SET LINE SENSORS AS INPUT",
+            {
+                "setup":" pinMode(5, INPUT);\n pinMode(6, INPUT);\n pinMode(7, INPUT);\n",
+                "inc":"",
+                "def":"",
+                "work":"",
+                "loop":""
+            }
+        ],
+
+        [
+            "w",
+            "SET MOTORS AS OUTPUT",
+            "SET MOTORS AS OUTPUT",
+            {
+                "setup":" pinMode(8, OUTPUT);\n pinMode(9, OUTPUT);\n pinMode(10, OUTPUT);\n pinMode(11, OUTPUT);\n",
+                "inc":"",
+                "def":"",
+                "work":"",
+                "loop":""
+            }
+        ],
+
+        [
+            "w",
+            "HARDWARE TIMER",
+            "HARDWARE TIMER",
+            {
+                "setup":"RTC=millis()+10;\n",
+                "inc":"",
+                "def":"",
+                "work":"if(millis()>=RTC)\n{\nRTC=RTC+10;\nif(RETRY_DELAY>10) RETRY_DELAY--;\nif(LED_FLASH>0)\n{\nLED_FLASH--;\nif(LED_FLASH==0){\nLED_FLASH=25;\nPORTB ^= 0x20;\n}\n}\n}\n",
+                "loop":""
+            }
+        ],
+
+        [
+            "w",
+            "LINEBOT VARIABLES",
+            "LINEBOT VARIABLES",
+            {
+                "setup":"",
+                "inc":"",
+                "def":"long int RTC;\nint LINE_SENSE = 0;\nint GIVE_UP = 0;\nint LAST_SENSE;\nbyte RETRY_DELAY = 0;\nbyte LED_FLASH = 25;\n",
+                "work":"",
+                "loop":""
+            }
+        ],
+
+        [
+            "w",
+            "OBSTAPROX VARIABLES",
+            "OBSTAPROX VARIABLES",
+            {
+                "setup":"",
+                "inc":"",
+                "def":"int TIMER= 0;\nint STUCK_TIMER = 0;\nint z = 0;\nint y = 0;\n",
+                "work":"",
+                "loop":""
+            }
+        ],
+
+        ["w", "SET %s TO %n","vary","y","1",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"y = {1};\n","loop":""}],
+
+        ["w", "SET %s TO %n","varz","z","1",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"z = {1};\n","loop":""}],
+
+        ["w", "SET %s TO %s","giveup","GIVE UP","++",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"GIVE_UP++;\n","loop":""}],
+
+        ["w", "SET %s TO %n","vartimer","TIMER","0",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"TIMER = {1};\n","loop":""}],
+
+        ["w", "SET %s TO %s","timer","TIMER","++",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"TIMER++;\n","loop":""}],
+
+         ["w", "SET %s TO %n","varstuck","STUCK_TIMER","0",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"STUCK_TIMER = {1};\n","loop":""}],
+
+        ["w", "SET %s TO %s","stuck","STUCK_TIMER","++",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"STUCK_TIMER++;\n","loop":""}],
+
+        ["w", "SET %s TO %n","varline","LINE_SENSE","0",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"LINE_SENSE = {1};\n","loop":""}],
+
+        ["w", "SET %s by LINE_SENSE TO %n","varlinesense","LINE_SENSE","0",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"LINE_SENSE = LINE_SENSE + {1};\n","loop":""}],
+
+        ["w", "%s TO LINE_SENSE","lastline","LINE_SENSE",
+        {"encode":"{d0}{d1}","setup":"","inc":"","def":"","work":"LAST_SENSE=LINE_SENSE;\n","loop":""}],
+
+        ["w", "GIVE UP = %n","give","0",
+        {"encode":"{d0}","setup":"","inc":"","def":"","work":"GIVE_UP={0};\n","loop":""}],
+
+        ["w", "RETRY DELAY = %n","ret","0",
+        {"encode":"{d0}","setup":"","inc":"","def":"","work":"RETRY_DELAY={0};\n","loop":""}],
+
+        ["B", "LINE_SENSE %n & RETRY_DELAY %n","lineretry","0","0",
+        {"encode":"{d0}","setup":"","inc":"","def":"","work":"(LINE_SENSE == {0}) & (RETRY_DELAY == {1})","loop":""}],
+
+        ["B", "LINE_SENSE %n | LINE_SENSE %n","linetwo","0","0",
+        {"encode":"{d0}","setup":"","inc":"","def":"","work":"(LINE_SENSE == {0}) | (LINE_SENSE == {1})","loop":""}],
+
+        ["B", "TIMER <= %n","timerless","0",
+        {"encode":"{d0}","setup":"","inc":"","def":"","work":"(TIMER<={0})","loop":""}],
+
+        ["B", "LINE_SENSE != %n","linenot","0",
+        {"encode":"{d0}","setup":"","inc":"","def":"","work":"LINE_SENSE !={0}","loop":""}],
+
+        ["B", "TIMER >= %n","timergreater","0",
+        {"encode":"{d0}","setup":"","inc":"","def":"","work":"(TIMER>={0})","loop":""}],
+
+        ["B", "STUCK_TIMER <= %n","timerless","0",
+        {"encode":"{d0}","setup":"","inc":"","def":"","work":"(STUCK_TIMER<={0})","loop":""}],
+
+        ["B", "STUCK_TIMER >= %n","stuckgreater","0",
+        {"encode":"{d0}","setup":"","inc":"","def":"","work":"(STUCK_TIMER>={0})","loop":""}],
+        //READING SENSORS BLOCK
+
+        ["B", "READ DIGITAL PIN %n","Digital_pin","9",
+		{"encode":"{d0}","setup":" pinMode({0}, INPUT);\n","inc":"","def":"","work":"digitalRead({0})","loop":""}],
+
+		//ALL MOTOR BLOCKS
+
+		["w", "SET MOTOR PIN %d.pin OUTPUT AS %d.digital","dirmotor", "8", "HIGH",
+		{"encode":"{d0}{d1}","setup":" pinMode({0}, OUTPUT);\n","inc":"","def":"","work":"digitalWrite({0},{1});\n","loop":""}],
+
+		["w", "SET MOTOR PIN %d.pin SPEED AT %d.pwmvalue","pwmmotor", "8", "0",
+		{"encode":"{d0}{d1}","setup":" pinMode({0}, OUTPUT);\n","inc":"","def":"","work":"analogWrite({0},{1});\n","loop":""}],
+
+		["w", "MOVE FORWARD %d.pwmvalue SPEED","runfwd", "0", 0,
+		{"setup":"","inc":"","def":"","work":"MINIBOT.FORWARD({0});\n","loop":""}],
+
+		["w", "MOVE BACKWARD %d.pwmvalue SPEED","runbwd", "0", 0,
+		{"setup":"","inc":"","def":"","work":"MINIBOT.BACKWARD({0});\n","loop":""}],
+
+		["w", "ROTATE %d.pwmvalue SPEED","rotate", "0", 0,
+		{"setup":"","inc":"","def":"","work":"MINIBOT.ROTATE({0});\n","loop":""}],
+
+		["w", "STOP","stop", "0", 0,
+		{"setup":"","inc":"","def":"","work":"MINIBOT.STOP();\n","loop":""}],
+
+		["w", "DIR FORWARD MOTOR 1 %d.pwmvalue AND MOTOR 2 %d.pwmvalue SPEED","dirfwd", "0", "0",
+		{"setup":"","inc":"","def":"","work":"MINIBOT.DIR_FORWARD({0},{1});\n","loop":""}],
+
+        ["w", "DIR BACKWARD MOTOR 1 %d.pwmvalue AND MOTOR 2 %d.pwmvalue SPEED","dirbwd", "0", "0",
+        {"setup":"","inc":"","def":"","work":"MINIBOT.DIR_BACKWARD({0},{1});\n","loop":""}]
+
+		
+	],
+	"menus": {
+			"pin":["8","9","10","11"],
+			"digital":["HIGH","LOW"],
+			"pwmvalue":["0","10","20","30","40","50","60","70","80","90","100","110","120","130","140","150","160","170","180","190","200","210","2220","255"],
+	},
+	"values":{ // corresponding values for "HIGH" and "LOW"
+	"HIGH":1,"LOW":0,
+	},
+	"translators":{
+
+		}
+	}
+}
